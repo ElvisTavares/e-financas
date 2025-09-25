@@ -1,0 +1,8 @@
+:root {
+  /* Paleta Profissional */
+  --color-primary: #1E88E5;   /* Azul */
+  --color-secondary: #43A047; /* Verde */
+  --color-neutral: #F5F5F5;   /* Cinza Claro */
+  --color-text: #212121;      /* Texto */
+  --color-danger: #E53935;    /* Vermelho (alertas) */
+}
