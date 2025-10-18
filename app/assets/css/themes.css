@@ -5,4 +5,5 @@
   --color-neutral: #F5F5F5;   /* Cinza Claro */
   --color-text: #212121;      /* Texto */
   --color-danger: #E53935;    /* Vermelho (alertas) */
+  --ui-text: #000000; /* preto suave ou sua cor preferida */
 }
