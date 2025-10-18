@@ -58,12 +58,12 @@
         size="lg"
         block
         :padded="true"
-        to="/posts"
+        to="/dashboard"
       >
         <template #leading>
           <UIcon name="i-heroicons-document-text" class="w-5 h-5" />
         </template>
-        <span v-if="!isCollapsed">Menu</span>
+        <span v-if="!isCollapsed">Home</span>
       </UButton>
 
       <!-- Media -->
@@ -73,12 +73,12 @@
         size="lg"
         block
         :padded="true"
-        to="/media"
+        to="/dashboard/accounts/list"
       >
         <template #leading>
           <UIcon name="i-heroicons-photo" class="w-5 h-5" />
         </template>
-        <span v-if="!isCollapsed">Menu</span>
+        <span v-if="!isCollapsed">Contas</span>
       </UButton>
 
       <!-- Pages -->
