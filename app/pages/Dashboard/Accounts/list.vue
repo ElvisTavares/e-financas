@@ -11,13 +11,31 @@
             class="text-xl md:text-2xl font-bold mb-4"
             style="color: var(--color-primary)"
           >
-            Content
+            Nova Conta
           </h2>
-          <UButton
-            to="/dashboard/accounts/register"
-            class="font-bold rounded-full"
-            >Inserir Despesa</UButton
-          >
+          <form @submit.prevent="saveAccount" class="flex flex-col gap-4">
+            <div class="flex flex-col gap-2">
+              <label class="font-semibold">Nome</label>
+              <UInput v-model="state.name" placeholder="Ex: Conta Corrente" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-semibold">Tipo</label>
+              <UInput v-model="state.type" placeholder="Ex: Bancária" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-semibold">Categoria</label>
+              <USelect v-model="state.category" :items="items" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-semibold">Valor</label>
+              <UInput v-model="state.amount" type="number" placeholder="0.00" />
+            </div>
+            <UButton type="submit" class="w-fit font-bold rounded-full">
+              Salvar
+            </UButton>
+          </form>
         </div>
 
         <div class="p-4 md:p-8 rounded-lg shadow-md w-full">
@@ -56,31 +74,24 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="hover:bg-[var(--color-neutral)] transition-colors">
+                <tr
+                  v-for="despesa in despesas"
+                  :key="despesa.id"
+                  class="hover:bg-[var(--color-neutral)] transition-colors"
+                >
                   <td class="px-4 py-2 text-gray-900 font-medium">
-                    Conta Corrente
-                  </td>
-                  <td class="px-4 py-2 text-gray-900 font-medium">Bancária</td>
-                  <td class="px-4 py-2 text-gray-900 font-medium">
-                    R$ 2.500,00
-                  </td>
-                  <td class="px-4 py-2 text-green-600 font-bold">Ativa</td>
-                </tr>
-                <tr class="hover:bg-[var(--color-neutral)] transition-colors">
-                  <td class="px-4 py-2 text-gray-900 font-medium">
-                    Cartão Visa
+                    {{ despesa.nome }}
                   </td>
                   <td class="px-4 py-2 text-gray-900 font-medium">
-                    Cartão de Crédito
+                    {{ despesa.tipo }}
                   </td>
-                  <td class="px-4 py-2 text-gray-900 font-medium">R$ 500,00</td>
-                  <td class="px-4 py-2 text-red-600 font-bold">Bloqueada</td>
-                </tr>
-                <tr class="hover:bg-[var(--color-neutral)] transition-colors">
-                  <td class="px-4 py-2 text-gray-900 font-medium">Poupança</td>
-                  <td class="px-4 py-2 text-gray-900 font-medium">Bancária</td>
                   <td class="px-4 py-2 text-gray-900 font-medium">
-                    R$ 10.000,00
+                    {{
+                      new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(despesa.valor)
+                    }}
                   </td>
                   <td class="px-4 py-2 text-green-600 font-bold">Ativa</td>
                 </tr>
@@ -93,6 +104,54 @@
   </UDashboardGroup>
 </template>
 
+<!-- <template>
+  <div>
+    <h1>Testando conexão Supabase</h1>
+  </div>
+</template> -->
+
 <script setup>
-// Dados fakes, pode ser substituído por API futuramente
+import { useDespesas } from "../../../../composables/useDespesas";
+import { useCategories } from "../../../../composables/useCategories";
+
+const { listarDespesas } = useDespesas();
+const { listCategories } = useCategories();
+
+const despesas = ref([]);
+
+const categories = ref([]);
+
+const items = ref([
+  { label: "Alimentação", value: 1 },
+  { label: "Casa", value: 2 },
+]);
+const value = ref(1);
+
+const state = reactive({
+  name: undefined,
+  type: undefined,
+  amount: undefined,
+  status: "Ativa",
+  category: undefined,
+});
+
+const optionsCategory = [
+  { label: "Alimentação", value: 1 },
+  { label: "Casa", value: 2 },
+];
+
+const saveAccount = () => {
+  console.log("Form Data:", state);
+};
+
+onMounted(async () => {
+  try {
+    despesas.value = await listarDespesas();
+    categories.value = await listCategories();
+    console.log("Categorias", categories.value);
+    // console.log("Despesas do banco:", despesas.value);
+  } catch (error) {
+    console.error("Erro ao buscar despesas:", error);
+  }
+});
 </script>

@@ -37,7 +37,7 @@
     <!-- Menu Items -->
     <nav :class="['flex flex-col gap-1 flex-1', isCollapsed ? 'px-1' : 'px-4']">
       <!-- Dashboard -->
-      <UButton
+      <!-- <UButton
         class="justify-start text-white hover:bg-slate-700 transition-colors duration-200"
         variant="ghost"
         size="lg"
@@ -49,7 +49,7 @@
           <UIcon name="i-heroicons-home" class="w-5 h-5" />
         </template>
         <span v-if="!isCollapsed">Dashboard - component</span>
-      </UButton>
+      </UButton> -->
 
       <!-- Posts -->
       <UButton
@@ -78,11 +78,11 @@
         <template #leading>
           <UIcon name="i-heroicons-photo" class="w-5 h-5" />
         </template>
-        <span v-if="!isCollapsed">Contas</span>
+        <span v-if="!isCollapsed">Despesas</span>
       </UButton>
 
       <!-- Pages -->
-      <UButton
+      <!-- <UButton
         class="justify-start text-white hover:bg-slate-700 transition-colors duration-200"
         variant="ghost"
         size="lg"
@@ -94,10 +94,10 @@
           <UIcon name="i-heroicons-document" class="w-5 h-5" />
         </template>
         <span v-if="!isCollapsed">Menu</span>
-      </UButton>
+      </UButton> -->
 
       <!-- Settings -->
-      <UButton
+      <!-- <UButton
         class="justify-start text-white hover:bg-slate-700 transition-colors duration-200"
         variant="ghost"
         size="lg"
@@ -109,10 +109,10 @@
           <UIcon name="i-heroicons-cog-6-tooth" class="w-5 h-5" />
         </template>
         <span v-if="!isCollapsed">Menu</span>
-      </UButton>
+      </UButton> -->
 
       <!-- Tools -->
-      <UButton
+      <!-- <UButton
         class="justify-start text-white hover:bg-slate-700 transition-colors duration-200"
         variant="ghost"
         size="lg"
@@ -124,7 +124,7 @@
           <UIcon name="i-heroicons-wrench-screwdriver" class="w-5 h-5" />
         </template>
         <span v-if="!isCollapsed">Menu</span>
-      </UButton>
+      </UButton> -->
     </nav>
 
     <!-- Bottom Section -->
