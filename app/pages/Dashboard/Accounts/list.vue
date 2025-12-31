@@ -122,8 +122,8 @@ const despesas = ref([]);
 const categories = ref([]);
 
 const items = ref([
-  { label: "Alimentação", value: 1 },
-  { label: "Casa", value: 2 },
+  // { label: "Alimentação", value: 1 },
+  // { label: "Casa", value: 2 },
 ]);
 const value = ref(1);
 
@@ -148,8 +148,11 @@ onMounted(async () => {
   try {
     despesas.value = await listarDespesas();
     categories.value = await listCategories();
-    console.log("Categorias", categories.value);
-    // console.log("Despesas do banco:", despesas.value);
+
+    items.value = categories.value.map((category) => ({
+      label: category.name,
+      value: category.id,
+    }));
   } catch (error) {
     console.error("Erro ao buscar despesas:", error);
   }
