@@ -151,6 +151,7 @@ import { useCategories } from "../../../../composables/useCategories";
 
 const { listarDespesas } = useDespesas();
 const { listCategories } = useCategories();
+const { criarDespesa } = useDespesas();
 
 const despesas = ref([]);
 
@@ -198,6 +199,14 @@ const yearOptions = Array.from({ length: 11 }, (_, i) => ({
 async function saveAccount() {
   // Lógica para salvar a conta
   console.log("Salvando conta:", state);
+  await criarDespesa({
+    nome: state.name,
+    tipo: state.type,
+    valor: state.amount,
+    id_category: state.category,
+    month: state.month,
+    year: state.year,
+  });
 }
 
 onMounted(async () => {

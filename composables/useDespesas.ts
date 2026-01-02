@@ -29,6 +29,9 @@ export const useDespesas = () => {
     nome: string;
     tipo: string;
     valor: number;
+    id_category: number;
+    month: number;
+    year: number;
   }) => {
     const { data, error } = await supabase
       .from("despesas")
