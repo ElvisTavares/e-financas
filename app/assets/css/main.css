@@ -1,8 +1,19 @@
-@import url('themes.css');
+@import url("themes.css");
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/* Estilos customizados para garantir fundo cinza claro nos inputs */
+.u-input {
+  background-color: #f3f4f6 !important;
+}
 
+.u-input input {
+  background-color: #f3f4f6 !important;
+}
+
+.u-select {
+  background-color: #f3f4f6 !important;
+}
 
 /* body {
     font-family: Arial, Helvetica, sans-serif;
