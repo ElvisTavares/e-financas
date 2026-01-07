@@ -73,7 +73,7 @@
         size="lg"
         block
         :padded="true"
-        to="/dashboard/accounts/list"
+        to="/dashboard/expenses/list"
       >
         <template #leading>
           <UIcon name="i-heroicons-photo" class="w-5 h-5" />

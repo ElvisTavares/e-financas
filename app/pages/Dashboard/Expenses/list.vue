@@ -43,22 +43,22 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="despesa in despesas"
-                  :key="despesa.id"
+                  v-for="expense in expenses"
+                  :key="expense.id"
                   class="hover:bg-[var(--color-neutral)] transition-colors"
                 >
                   <td class="px-4 py-2 text-gray-900 font-medium">
-                    {{ despesa.nome }}
+                    {{ expense.nome }}
                   </td>
                   <td class="px-4 py-2 text-gray-900 font-medium">
-                    {{ despesa.tipo }}
+                    {{ expense.tipo }}
                   </td>
                   <td class="px-4 py-2 text-gray-900 font-medium">
                     {{
                       new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
-                      }).format(despesa.valor)
+                      }).format(expense.valor)
                     }}
                   </td>
                   <td class="px-4 py-2 text-green-600 font-bold">Ativa</td>
@@ -73,7 +73,7 @@
       icon="i-heroicons-plus"
       size="lg"
       class="fixed top-4 right-4 z-10"
-      @click="$router.push('/dashboard/accounts/register')"
+      @click="$router.push('/dashboard/expenses/register')"
       >Adicionar Despesa</UButton
     >
   </UDashboardGroup>
@@ -86,14 +86,14 @@
 </template> -->
 
 <script setup>
-import { useDespesas } from "../../../../composables/useDespesas";
+import { useExpenses } from "../../../../composables/useExpenses";
 import { useCategories } from "../../../../composables/useCategories";
 
-const { listarDespesas } = useDespesas();
+const { listExpenses } = useExpenses();
 // const { listCategories } = useCategories();
 // const { criarDespesa } = useDespesas();
 
-const despesas = ref([]);
+const expenses = ref([]);
 
 // const categories = ref([]);
 
@@ -151,7 +151,7 @@ const despesas = ref([]);
 
 onMounted(async () => {
   try {
-    despesas.value = await listarDespesas();
+    expenses.value = await listExpenses();
     // categories.value = await listCategories();
 
     // items.value = categories.value.map((category) => ({

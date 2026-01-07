@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-export const useDespesas = () => {
+export const useExpenses = () => {
   const config = useRuntimeConfig();
 
   const supabase = createClient(
@@ -8,7 +8,7 @@ export const useDespesas = () => {
     config.public.supabaseKey
   );
 
-  const listarDespesas = async () => {
+  const listExpenses = async () => {
     console.log("Buscando despesas...");
 
     const { data, error } = await supabase
@@ -25,7 +25,7 @@ export const useDespesas = () => {
     return data;
   };
 
-  const criarDespesa = async (despesa: {
+  const registerExpense = async (expense: {
     nome: string;
     tipo: string;
     valor: number;
@@ -35,7 +35,7 @@ export const useDespesas = () => {
   }) => {
     const { data, error } = await supabase
       .from("despesas")
-      .insert([despesa])
+      .insert([expense])
       .select();
 
     if (error) throw error;
@@ -67,8 +67,8 @@ export const useDespesas = () => {
   };
 
   return {
-    listarDespesas,
-    criarDespesa,
+    listExpenses,
+    registerExpense,
     atualizarDespesa,
     deletarDespesa,
   };
