@@ -1,129 +1,166 @@
-<script setup lang="ts">
-import type { FormError, FormSubmitEvent } from "#ui/types";
-import { useDespesas } from "../../../../composables/useDespesas";
-
-const { criarDespesa } = useDespesas();
-
-const state = reactive({
-  name: undefined as string | undefined,
-  type: undefined as string | undefined,
-  amount: undefined as string | number | undefined,
-});
-
-const optionsCategory = [
-  { label: "Alimentação", value: 1 },
-  { label: "Casa", value: 2 },
-];
-
-const category = ref();
-
-const validate = (state: any): FormError[] => {
-  const errors = [];
-  if (!state.name) errors.push({ name: "name", message: "Required" });
-  if (!state.type) errors.push({ name: "type", message: "Required" });
-
-  if (!state.amount) {
-    errors.push({ name: "amount", message: "Required" });
-  } else {
-    // Regex to allow integers or BRL currency format with comma (e.g., 20 or 2,50)
-    const brlRegex = /^(\d{1,3}(\.\d{3})*|\d+)(,\d{1,2})?$/;
-    if (!brlRegex.test(state.amount)) {
-      errors.push({
-        name: "amount",
-        message:
-          "O valor deve ser um número inteiro ou ter vírgula (ex: 20 ou 2,50)",
-      });
-    }
-  }
-
-  return errors;
-};
-
-const toast = useToast();
-async function onSubmit(event: FormSubmitEvent<typeof state>) {
-  try {
-    const amountStr = String(event.data.amount);
-    const amountParsed = parseFloat(
-      amountStr.replace(/\./g, "").replace(",", ".")
-    );
-
-    await criarDespesa({
-      nome: event.data.name as string,
-      tipo: event.data.type as string,
-      valor: amountParsed,
-    });
-
-    toast.add({
-      title: "Sucesso",
-      description: "Despesa salva com sucesso!",
-      color: "success",
-    });
-
-    // Redirect to list page
-    await navigateTo("/dashboard/accounts/list");
-  } catch (error) {
-    console.error("Erro ao salvar:", error);
-    toast.add({
-      title: "Erro",
-      description: "Erro ao salvar a despesa.",
-      color: "error",
-    });
-  }
-}
-</script>
-
 <template>
   <UDashboardGroup class="flex flex-col md:flex-row min-h-screen">
     <DashboardMenuSidebar />
+
     <div
       class="flex-1 flex flex-col bg-[var(--color-neutral)] min-h-screen px-2 md:px-8"
     >
       <div class="w-full flex flex-col gap-6 mt-8">
         <div class="p-4 md:p-8 rounded-lg shadow-md w-full">
-          <h1
+          <h2
             class="text-xl md:text-2xl font-bold mb-4"
             style="color: var(--color-primary)"
           >
-            Register
-          </h1>
+            Nova Conta
+          </h2>
+          <form @submit.prevent="saveAccount" class="flex flex-col gap-4">
+            <div class="flex flex-col md:flex-row gap-4">
+              <div class="flex flex-col gap-2 flex-1">
+                <label class="font-semibold">Nome</label>
+                <UInput
+                  v-model="state.name"
+                  placeholder="Ex: Conta Corrente"
+                  class="bg-gray-100"
+                />
+              </div>
+              <div class="flex flex-col gap-2 flex-1">
+                <label class="font-semibold">Valor</label>
+                <UInput
+                  v-model="state.amount"
+                  type="number"
+                  placeholder="0.00"
+                  class="bg-gray-100"
+                />
+              </div>
+            </div>
 
-          <UForm
-            :validate="validate"
-            :state="state"
-            class="space-y-4"
-            @submit="onSubmit"
-          >
-            <UFormField
-              label="Nome"
-              name="name"
-              style="color: var(--color-primary)"
-            >
-              <UInput v-model="state.name" />
-            </UFormField>
+            <div class="flex flex-col gap-2 flex-1">
+              <label class="font-semibold">Categoria</label>
+              <USelect v-model="state.category" :items="items" />
+            </div>
 
-            <UFormField label="Tipo" name="type">
-              <UInput v-model="state.type" />
-            </UFormField>
-
-            <USelect
-              v-model="category"
-              ,
-              :options="optionsCategory"
-              placeholder="Categoria"
-            />
-
-            <UFormField label="Valor" name="amount">
-              <UInput v-model="state.amount" />
-            </UFormField>
-
-            <UButton type="submit"> Submit </UButton>
-          </UForm>
+            <div class="flex flex-col gap-2">
+              <label class="font-semibold">Mês e ano</label>
+              <div class="flex gap-2">
+                <USelect
+                  v-model="state.month"
+                  :items="monthOptions"
+                  placeholder="Mês"
+                  class="flex-1"
+                />
+                <USelect
+                  v-model="state.year"
+                  :items="yearOptions"
+                  placeholder="Ano"
+                  class="flex-1"
+                />
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-semibold">Tipo</label>
+              <UInput
+                v-model="state.type"
+                placeholder="Ex: Bancária"
+                class="bg-gray-100"
+              />
+            </div>
+            <UButton type="submit" class="w-fit font-bold rounded-full">
+              Salvar
+            </UButton>
+          </form>
         </div>
       </div>
     </div>
+    <UButton
+      icon="i-heroicons-arrow-left"
+      size="lg"
+      class="fixed top-4 right-4 z-10"
+      @click="$router.push('/dashboard/accounts/list')"
+      >Voltar</UButton
+    >
   </UDashboardGroup>
-
-  <h1>Ola</h1>
 </template>
 
-<style></style>
+<!-- <template>
+  <div>
+    <h1>Testando conexão Supabase</h1>
+  </div>
+</template> -->
+
+<script setup>
+import { useDespesas } from "../../../../composables/useDespesas";
+import { useCategories } from "../../../../composables/useCategories";
+
+const { listCategories } = useCategories();
+const { criarDespesa } = useDespesas();
+
+const despesas = ref([]);
+
+const categories = ref([]);
+
+const items = ref([
+  // { label: "Alimentação", value: 1 },
+  // { label: "Casa", value: 2 },
+]);
+
+const state = reactive({
+  name: undefined,
+  type: undefined,
+  amount: undefined,
+  status: "Ativa",
+  category: undefined,
+});
+
+const monthOptions = [
+  { label: "Janeiro", value: 1 },
+  { label: "Fevereiro", value: 2 },
+  { label: "Março", value: 3 },
+  { label: "Abril", value: 4 },
+  { label: "Maio", value: 5 },
+  { label: "Junho", value: 6 },
+  { label: "Julho", value: 7 },
+  { label: "Agosto", value: 8 },
+  { label: "Setembro", value: 9 },
+  { label: "Outubro", value: 10 },
+  { label: "Novembro", value: 11 },
+  { label: "Dezembro", value: 12 },
+];
+
+const currentYear = new Date().getFullYear();
+const yearOptions = Array.from({ length: 11 }, (_, i) => ({
+  label: (currentYear + i).toString(),
+  value: currentYear + i,
+}));
+
+// const saveAccount = () => {
+//   console.log("Form Data:", state);
+// };
+
+async function saveAccount() {
+  // Lógica para salvar a conta
+  console.log("Salvando conta:", state);
+  await criarDespesa({
+    nome: state.name,
+    tipo: state.type,
+    valor: state.amount,
+    id_category: state.category,
+    month: state.month,
+    year: state.year,
+  });
+
+  navigateTo("/dashboard/accounts/list");
+}
+
+onMounted(async () => {
+  try {
+    categories.value = await listCategories();
+
+    items.value = categories.value.map((category) => ({
+      label: category.name,
+      value: category.id,
+    }));
+  } catch (error) {
+    console.error("Erro ao buscar despesas:", error);
+  }
+});
+</script>
