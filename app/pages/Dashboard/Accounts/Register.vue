@@ -34,13 +34,9 @@
               </div>
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2 flex-1">
               <label class="font-semibold">Categoria</label>
-              <USelect
-                v-model="state.category"
-                :items="items"
-                class="bg-gray-100"
-              />
+              <USelect v-model="state.category" :items="items" />
             </div>
 
             <div class="flex flex-col gap-2">
@@ -50,13 +46,13 @@
                   v-model="state.month"
                   :items="monthOptions"
                   placeholder="Mês"
-                  class="bg-gray-100 flex-1"
+                  class="flex-1"
                 />
                 <USelect
                   v-model="state.year"
                   :items="yearOptions"
                   placeholder="Ano"
-                  class="bg-gray-100 flex-1"
+                  class="flex-1"
                 />
               </div>
             </div>
