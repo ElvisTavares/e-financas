@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-export const useDespesas = () => {
+export const useExpenses = () => {
   const config = useRuntimeConfig();
 
   const supabase = createClient(
@@ -8,7 +8,7 @@ export const useDespesas = () => {
     config.public.supabaseKey
   );
 
-  const listarDespesas = async () => {
+  const listExpenses = async () => {
     console.log("Buscando despesas...");
 
     const { data, error } = await supabase
@@ -25,7 +25,7 @@ export const useDespesas = () => {
     return data;
   };
 
-  const criarDespesa = async (despesa: {
+  const registerExpense = async (expense: {
     nome: string;
     tipo: string;
     valor: number;
@@ -35,14 +35,25 @@ export const useDespesas = () => {
   }) => {
     const { data, error } = await supabase
       .from("despesas")
-      .insert([despesa])
+      .insert([expense])
       .select();
 
     if (error) throw error;
     return data;
   };
 
-  const atualizarDespesa = async (
+  const getById = async (id: number) => {
+    const { data, error } = await supabase
+      .from("despesas")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  };
+
+  const editExpense = async (
     id: number,
     despesa: {
       nome?: string;
@@ -60,16 +71,17 @@ export const useDespesas = () => {
     return data;
   };
 
-  const deletarDespesa = async (id: number) => {
+  const deleteExpense = async (id: number) => {
     const { error } = await supabase.from("despesas").delete().eq("id", id);
 
     if (error) throw error;
   };
 
   return {
-    listarDespesas,
-    criarDespesa,
-    atualizarDespesa,
-    deletarDespesa,
+    listExpenses,
+    registerExpense,
+    getById,
+    editExpense,
+    deleteExpense,
   };
 };

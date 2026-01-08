@@ -75,33 +75,24 @@
       icon="i-heroicons-arrow-left"
       size="lg"
       class="fixed top-4 right-4 z-10"
-      @click="$router.push('/dashboard/accounts/list')"
+      @click="$router.push('/dashboard/expenses/list')"
       >Voltar</UButton
     >
   </UDashboardGroup>
 </template>
 
-<!-- <template>
-  <div>
-    <h1>Testando conexão Supabase</h1>
-  </div>
-</template> -->
-
 <script setup>
-import { useDespesas } from "../../../../composables/useDespesas";
+import { useExpenses } from "../../../../composables/useExpenses";
 import { useCategories } from "../../../../composables/useCategories";
 
 const { listCategories } = useCategories();
-const { criarDespesa } = useDespesas();
+const { registerExpense } = useExpenses();
 
-const despesas = ref([]);
+const expenses = ref([]);
 
 const categories = ref([]);
 
-const items = ref([
-  // { label: "Alimentação", value: 1 },
-  // { label: "Casa", value: 2 },
-]);
+const items = ref([]);
 
 const state = reactive({
   name: undefined,
@@ -132,14 +123,9 @@ const yearOptions = Array.from({ length: 11 }, (_, i) => ({
   value: currentYear + i,
 }));
 
-// const saveAccount = () => {
-//   console.log("Form Data:", state);
-// };
-
 async function saveAccount() {
-  // Lógica para salvar a conta
   console.log("Salvando conta:", state);
-  await criarDespesa({
+  await registerExpense({
     nome: state.name,
     tipo: state.type,
     valor: state.amount,
@@ -148,7 +134,7 @@ async function saveAccount() {
     year: state.year,
   });
 
-  navigateTo("/dashboard/accounts/list");
+  navigateTo("/dashboard/expenses/list");
 }
 
 onMounted(async () => {
