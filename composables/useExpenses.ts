@@ -71,7 +71,7 @@ export const useExpenses = () => {
     return data;
   };
 
-  const deletarDespesa = async (id: number) => {
+  const deleteExpense = async (id: number) => {
     const { error } = await supabase.from("despesas").delete().eq("id", id);
 
     if (error) throw error;
@@ -82,6 +82,6 @@ export const useExpenses = () => {
     registerExpense,
     getById,
     editExpense,
-    deletarDespesa,
+    deleteExpense,
   };
 };

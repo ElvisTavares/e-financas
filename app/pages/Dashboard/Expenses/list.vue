@@ -81,6 +81,13 @@
                       "
                       >Editar</UButton
                     >
+                    <UButton
+                      icon="i-heroicons-trash"
+                      size="sm"
+                      class="ml-2"
+                      @click="openDeleteModal(expense.id, expense.nome)"
+                      >Deletar</UButton
+                    >
                   </td>
                 </tr>
               </tbody>
@@ -89,6 +96,28 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+    >
+      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 class="text-lg font-bold mb-4">Confirmar exclusão</h3>
+        <p class="mb-6">
+          Deseja realmente excluir "<strong>{{ deleteName }}</strong
+          >"?
+        </p>
+        <div class="flex justify-end gap-2">
+          <UButton class="bg-gray-200" @click="closeDeleteModal"
+            >Cancelar</UButton
+          >
+          <UButton class="bg-red-600 text-white" @click="confirmDelete"
+            >Excluir</UButton
+          >
+        </div>
+      </div>
+    </div>
+
     <UButton
       icon="i-heroicons-plus"
       size="lg"
@@ -99,85 +128,43 @@
   </UDashboardGroup>
 </template>
 
-<!-- <template>
-  <div>
-    <h1>Testando conexão Supabase</h1>
-  </div>
-</template> -->
-
 <script setup>
 import { useExpenses } from "../../../../composables/useExpenses";
 import { useCategories } from "../../../../composables/useCategories";
 
-const { listExpenses } = useExpenses();
-// const { listCategories } = useCategories();
-// const { criarDespesa } = useDespesas();
-
+const { listExpenses, deleteExpense } = useExpenses();
 const expenses = ref([]);
+const showDeleteModal = ref(false);
+const deleteId = ref(null);
+const deleteName = ref("");
 
-// const categories = ref([]);
+function openDeleteModal(id, name) {
+  deleteId.value = id;
+  deleteName.value = name || "";
+  showDeleteModal.value = true;
+}
 
-// const items = ref([
-//   // { label: "Alimentação", value: 1 },
-//   // { label: "Casa", value: 2 },
-// ]);
-// const value = ref(1);
+function closeDeleteModal() {
+  showDeleteModal.value = false;
+  deleteId.value = null;
+  deleteName.value = "";
+}
 
-// const state = reactive({
-//   name: undefined,
-//   type: undefined,
-//   amount: undefined,
-//   status: "Ativa",
-//   category: undefined,
-// });
-
-// const monthOptions = [
-//   { label: "Janeiro", value: 1 },
-//   { label: "Fevereiro", value: 2 },
-//   { label: "Março", value: 3 },
-//   { label: "Abril", value: 4 },
-//   { label: "Maio", value: 5 },
-//   { label: "Junho", value: 6 },
-//   { label: "Julho", value: 7 },
-//   { label: "Agosto", value: 8 },
-//   { label: "Setembro", value: 9 },
-//   { label: "Outubro", value: 10 },
-//   { label: "Novembro", value: 11 },
-//   { label: "Dezembro", value: 12 },
-// ];
-
-// const currentYear = new Date().getFullYear();
-// const yearOptions = Array.from({ length: 11 }, (_, i) => ({
-//   label: (currentYear + i).toString(),
-//   value: currentYear + i,
-// }));
-
-// const saveAccount = () => {
-//   console.log("Form Data:", state);
-// };
-
-// async function saveAccount() {
-//   // Lógica para salvar a conta
-//   console.log("Salvando conta:", state);
-//   await criarDespesa({
-//     nome: state.name,
-//     tipo: state.type,
-//     valor: state.amount,
-//     id_category: state.category,
-//     month: state.month,
-//     year: state.year,
-//   });
-// }
+async function confirmDelete() {
+  try {
+    if (!deleteId.value) return;
+    await deleteExpense(Number(deleteId.value));
+    expenses.value = await listExpenses();
+    closeDeleteModal();
+  } catch (error) {
+    console.error("Erro ao excluir:", error);
+    alert("Erro ao excluir despesa.");
+  }
+}
 
 onMounted(async () => {
   try {
     expenses.value = await listExpenses();
-    // categories.value = await listCategories();
-
-    // items.value = categories.value.map((category) => ({
-    //   label: category.name,
-    //   value: category.id,
-    // }));
   } catch (error) {
     console.error("Erro ao buscar despesas:", error);
   }

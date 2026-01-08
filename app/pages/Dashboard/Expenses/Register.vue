@@ -81,12 +81,6 @@
   </UDashboardGroup>
 </template>
 
-<!-- <template>
-  <div>
-    <h1>Testando conexão Supabase</h1>
-  </div>
-</template> -->
-
 <script setup>
 import { useExpenses } from "../../../../composables/useExpenses";
 import { useCategories } from "../../../../composables/useCategories";
@@ -98,10 +92,7 @@ const expenses = ref([]);
 
 const categories = ref([]);
 
-const items = ref([
-  // { label: "Alimentação", value: 1 },
-  // { label: "Casa", value: 2 },
-]);
+const items = ref([]);
 
 const state = reactive({
   name: undefined,
@@ -132,12 +123,7 @@ const yearOptions = Array.from({ length: 11 }, (_, i) => ({
   value: currentYear + i,
 }));
 
-// const saveAccount = () => {
-//   console.log("Form Data:", state);
-// };
-
 async function saveAccount() {
-  // Lógica para salvar a conta
   console.log("Salvando conta:", state);
   await registerExpense({
     nome: state.name,

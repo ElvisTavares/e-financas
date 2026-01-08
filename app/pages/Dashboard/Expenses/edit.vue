@@ -93,10 +93,7 @@ const idExpense = useRoute().query.id;
 
 const categories = ref([]);
 
-const items = ref([
-  // { label: "Alimentação", value: 1 },
-  // { label: "Casa", value: 2 },
-]);
+const items = ref([]);
 
 const state = reactive({
   name: undefined,
