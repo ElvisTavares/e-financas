@@ -42,7 +42,18 @@ export const useExpenses = () => {
     return data;
   };
 
-  const atualizarDespesa = async (
+  const getById = async (id: number) => {
+    const { data, error } = await supabase
+      .from("despesas")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  };
+
+  const editExpense = async (
     id: number,
     despesa: {
       nome?: string;
@@ -69,7 +80,8 @@ export const useExpenses = () => {
   return {
     listExpenses,
     registerExpense,
-    atualizarDespesa,
+    getById,
+    editExpense,
     deletarDespesa,
   };
 };

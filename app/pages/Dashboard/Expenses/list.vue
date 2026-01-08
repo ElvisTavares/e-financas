@@ -39,6 +39,12 @@
                   >
                     Status
                   </th>
+
+                  <th
+                    class="px-4 py-2 text-left font-semibold text-[var(--color-primary)]"
+                  >
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -62,6 +68,20 @@
                     }}
                   </td>
                   <td class="px-4 py-2 text-green-600 font-bold">Ativa</td>
+                  <td>
+                    <UButton
+                      icon="i-heroicons-pencil"
+                      size="sm"
+                      class="mr-2"
+                      @click="
+                        $router.push({
+                          path: '/dashboard/expenses/edit/',
+                          query: { id: expense.id },
+                        })
+                      "
+                      >Editar</UButton
+                    >
+                  </td>
                 </tr>
               </tbody>
             </table>
