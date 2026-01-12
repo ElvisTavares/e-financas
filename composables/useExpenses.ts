@@ -21,7 +21,6 @@ export const useExpenses = () => {
       throw error;
     }
 
-    console.log("Despesas encontradas:", data);
     return data;
   };
 

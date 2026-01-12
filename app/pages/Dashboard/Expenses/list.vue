@@ -67,8 +67,16 @@
                       }).format(expense.valor)
                     }}
                   </td>
-                  <td class="px-4 py-2 text-green-600 font-bold">
+                  <!-- <td class="px-4 py-2 text-green-600 font-bold">
                     {{ expense.status === 2 ? "Não Pago" : "Pago" }}
+                  </td> -->
+                  <td class="px-4 py-2 text-gray-900 font-medium">
+                    <span :title="expense.status === 2 ? 'Não Pago' : 'Pago'">
+                      <UCheckbox
+                        :model-value="expense.status === 1"
+                        @update:model-value="toggleStatus(expense)"
+                      />
+                    </span>
                   </td>
                   <td>
                     <UButton
@@ -134,7 +142,7 @@
 import { useExpenses } from "../../../../composables/useExpenses";
 import { useCategories } from "../../../../composables/useCategories";
 
-const { listExpenses, deleteExpense } = useExpenses();
+const { listExpenses, deleteExpense, editExpense } = useExpenses();
 const expenses = ref([]);
 const showDeleteModal = ref(false);
 const deleteId = ref(null);
@@ -164,10 +172,24 @@ async function confirmDelete() {
   }
 }
 
+async function toggleStatus(expense) {
+  try {
+    const newStatus = expense.status === 1 ? 2 : 1;
+
+    await editExpense(expense.id, {
+      ...expense,
+      status: newStatus,
+    });
+
+    expense.status = newStatus;
+  } catch (error) {
+    console.error("Erro ao atualizar status:", error);
+  }
+}
+
 onMounted(async () => {
   try {
     expenses.value = await listExpenses();
-    console.log("e", expenses.value);
   } catch (error) {
     console.error("Erro ao buscar despesas:", error);
   }
