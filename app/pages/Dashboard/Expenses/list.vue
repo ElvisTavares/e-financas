@@ -13,6 +13,15 @@
           >
             Contas
           </h2>
+
+          <div class="mb-4 flex items-center gap-2">
+            <USelect
+              v-model="selectedMonth"
+              :items="monthOptions"
+              placeholder="Mês"
+              class="w-48"
+            />
+          </div>
           <div class="overflow-x-auto">
             <table
               class="min-w-full border border-[var(--color-neutral)] rounded-lg"
@@ -147,6 +156,28 @@ const expenses = ref([]);
 const showDeleteModal = ref(false);
 const deleteId = ref(null);
 const deleteName = ref("");
+const currentMonth = new Date().getMonth() + 1;
+const selectedMonth = ref(currentMonth);
+
+const monthOptions = [
+  { label: "Janeiro", value: 1 },
+  { label: "Fevereiro", value: 2 },
+  { label: "Março", value: 3 },
+  { label: "Abril", value: 4 },
+  { label: "Maio", value: 5 },
+  { label: "Junho", value: 6 },
+  { label: "Julho", value: 7 },
+  { label: "Agosto", value: 8 },
+  { label: "Setembro", value: 9 },
+  { label: "Outubro", value: 10 },
+  { label: "Novembro", value: 11 },
+  { label: "Dezembro", value: 12 },
+];
+
+async function loadExpenses() {
+  const month = selectedMonth.value ? Number(selectedMonth.value) : undefined;
+  expenses.value = await listExpenses(month);
+}
 
 function openDeleteModal(id, name) {
   deleteId.value = id;
