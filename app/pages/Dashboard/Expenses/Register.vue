@@ -98,7 +98,7 @@ const state = reactive({
   name: undefined,
   type: undefined,
   amount: undefined,
-  status: "Ativa",
+  status: 2,
   category: undefined,
 });
 
@@ -132,6 +132,7 @@ async function saveAccount() {
     id_category: state.category,
     month: state.month,
     year: state.year,
+    status: 2,
   });
 
   navigateTo("/dashboard/expenses/list");

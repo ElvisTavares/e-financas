@@ -67,7 +67,9 @@
                       }).format(expense.valor)
                     }}
                   </td>
-                  <td class="px-4 py-2 text-green-600 font-bold">Ativa</td>
+                  <td class="px-4 py-2 text-green-600 font-bold">
+                    {{ expense.status === 2 ? "Não Pago" : "Pago" }}
+                  </td>
                   <td>
                     <UButton
                       icon="i-heroicons-pencil"
@@ -165,6 +167,7 @@ async function confirmDelete() {
 onMounted(async () => {
   try {
     expenses.value = await listExpenses();
+    console.log("e", expenses.value);
   } catch (error) {
     console.error("Erro ao buscar despesas:", error);
   }
