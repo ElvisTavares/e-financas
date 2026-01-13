@@ -21,7 +21,15 @@
               placeholder="Mês"
               class="w-48"
             />
+
+            <USelect
+              v-model="selectedYear"
+              :items="yearOptions"
+              placeholder="Ano"
+              class="w-48"
+            />
           </div>
+
           <div class="overflow-x-auto">
             <table
               class="min-w-full border border-[var(--color-neutral)] rounded-lg"
@@ -151,13 +159,15 @@
 import { useExpenses } from "../../../../composables/useExpenses";
 import { useCategories } from "../../../../composables/useCategories";
 
-const { listExpenses, deleteExpense, editExpense } = useExpenses();
+const { listExpenses, deleteExpense, editExpense, listExpensesbyMonthYear } =
+  useExpenses();
 const expenses = ref([]);
 const showDeleteModal = ref(false);
 const deleteId = ref(null);
 const deleteName = ref("");
 const currentMonth = new Date().getMonth() + 1;
 const selectedMonth = ref(currentMonth);
+const selectedYear = ref(new Date().getFullYear());
 
 const monthOptions = [
   { label: "Janeiro", value: 1 },
@@ -174,9 +184,17 @@ const monthOptions = [
   { label: "Dezembro", value: 12 },
 ];
 
+const currentYear = new Date().getFullYear();
+const yearOptions = Array.from({ length: 11 }, (_, i) => ({
+  label: (currentYear + i).toString(),
+  value: currentYear + i,
+}));
+
 async function loadExpenses() {
-  const month = selectedMonth.value ? Number(selectedMonth.value) : undefined;
-  expenses.value = await listExpenses(month);
+  expenses.value = await listExpensesbyMonthYear(
+    selectedMonth.value,
+    selectedYear.value
+  );
 }
 
 function openDeleteModal(id, name) {
@@ -218,11 +236,16 @@ async function toggleStatus(expense) {
   }
 }
 
+watch([selectedMonth, selectedYear], async () => {
+  await loadExpenses();
+});
+
 onMounted(async () => {
-  try {
-    expenses.value = await listExpenses();
-  } catch (error) {
-    console.error("Erro ao buscar despesas:", error);
-  }
+  await loadExpenses();
+  // try {
+  //   expenses.value = await listExpenses();
+  // } catch (error) {
+  //   console.error("Erro ao buscar despesas:", error);
+  // }
 });
 </script>

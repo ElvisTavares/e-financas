@@ -24,6 +24,17 @@ export const useExpenses = () => {
     return data;
   };
 
+  const listExpensesbyMonthYear = async (month: number, year: number) => {
+    const { data, error } = await supabase
+      .from("despesas")
+      .select("*")
+      .eq("month", month)
+      .eq("year", year)
+      .order("created_at", { ascending: false });
+
+    return data;
+  };
+
   const registerExpense = async (expense: {
     nome: string;
     tipo: string;
@@ -82,5 +93,6 @@ export const useExpenses = () => {
     getById,
     editExpense,
     deleteExpense,
+    listExpensesbyMonthYear,
   };
 };
