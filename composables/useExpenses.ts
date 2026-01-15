@@ -21,7 +21,17 @@ export const useExpenses = () => {
       throw error;
     }
 
-    console.log("Despesas encontradas:", data);
+    return data;
+  };
+
+  const listExpensesbyMonthYear = async (month: number, year: number) => {
+    const { data, error } = await supabase
+      .from("despesas")
+      .select("*")
+      .eq("month", month)
+      .eq("year", year)
+      .order("created_at", { ascending: false });
+
     return data;
   };
 
@@ -83,5 +93,6 @@ export const useExpenses = () => {
     getById,
     editExpense,
     deleteExpense,
+    listExpensesbyMonthYear,
   };
 };

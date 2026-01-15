@@ -13,6 +13,23 @@
           >
             Contas
           </h2>
+
+          <div class="mb-4 flex items-center gap-2">
+            <USelect
+              v-model="selectedMonth"
+              :items="monthOptions"
+              placeholder="Mês"
+              class="w-48"
+            />
+
+            <USelect
+              v-model="selectedYear"
+              :items="yearOptions"
+              placeholder="Ano"
+              class="w-48"
+            />
+          </div>
+
           <div class="overflow-x-auto">
             <table
               class="min-w-full border border-[var(--color-neutral)] rounded-lg"
@@ -67,7 +84,17 @@
                       }).format(expense.valor)
                     }}
                   </td>
-                  <td class="px-4 py-2 text-green-600 font-bold">Ativa</td>
+                  <!-- <td class="px-4 py-2 text-green-600 font-bold">
+                    {{ expense.status === 2 ? "Não Pago" : "Pago" }}
+                  </td> -->
+                  <td class="px-4 py-2 text-gray-900 font-medium">
+                    <span :title="expense.status === 2 ? 'Não Pago' : 'Pago'">
+                      <UCheckbox
+                        :model-value="expense.status === 1"
+                        @update:model-value="toggleStatus(expense)"
+                      />
+                    </span>
+                  </td>
                   <td>
                     <UButton
                       icon="i-heroicons-pencil"
@@ -132,11 +159,43 @@
 import { useExpenses } from "../../../../composables/useExpenses";
 import { useCategories } from "../../../../composables/useCategories";
 
-const { listExpenses, deleteExpense } = useExpenses();
+const { listExpenses, deleteExpense, editExpense, listExpensesbyMonthYear } =
+  useExpenses();
 const expenses = ref([]);
 const showDeleteModal = ref(false);
 const deleteId = ref(null);
 const deleteName = ref("");
+const currentMonth = new Date().getMonth() + 1;
+const selectedMonth = ref(currentMonth);
+const selectedYear = ref(new Date().getFullYear());
+
+const monthOptions = [
+  { label: "Janeiro", value: 1 },
+  { label: "Fevereiro", value: 2 },
+  { label: "Março", value: 3 },
+  { label: "Abril", value: 4 },
+  { label: "Maio", value: 5 },
+  { label: "Junho", value: 6 },
+  { label: "Julho", value: 7 },
+  { label: "Agosto", value: 8 },
+  { label: "Setembro", value: 9 },
+  { label: "Outubro", value: 10 },
+  { label: "Novembro", value: 11 },
+  { label: "Dezembro", value: 12 },
+];
+
+const currentYear = new Date().getFullYear();
+const yearOptions = Array.from({ length: 11 }, (_, i) => ({
+  label: (currentYear + i).toString(),
+  value: currentYear + i,
+}));
+
+async function loadExpenses() {
+  expenses.value = await listExpensesbyMonthYear(
+    selectedMonth.value,
+    selectedYear.value
+  );
+}
 
 function openDeleteModal(id, name) {
   deleteId.value = id;
@@ -162,11 +221,31 @@ async function confirmDelete() {
   }
 }
 
-onMounted(async () => {
+async function toggleStatus(expense) {
   try {
-    expenses.value = await listExpenses();
+    const newStatus = expense.status === 1 ? 2 : 1;
+
+    await editExpense(expense.id, {
+      ...expense,
+      status: newStatus,
+    });
+
+    expense.status = newStatus;
   } catch (error) {
-    console.error("Erro ao buscar despesas:", error);
+    console.error("Erro ao atualizar status:", error);
   }
+}
+
+watch([selectedMonth, selectedYear], async () => {
+  await loadExpenses();
+});
+
+onMounted(async () => {
+  await loadExpenses();
+  // try {
+  //   expenses.value = await listExpenses();
+  // } catch (error) {
+  //   console.error("Erro ao buscar despesas:", error);
+  // }
 });
 </script>
