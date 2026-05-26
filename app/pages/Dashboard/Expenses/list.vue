@@ -120,6 +120,14 @@
               </tbody>
             </table>
           </div>
+
+          <div class="mt-4 flex justify-end">
+            <div
+              class="px-4 py-2 rounded-lg bg-white/5 text-gray-900 font-semibold"
+            >
+              Total: {{ totalFormatted }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -189,6 +197,17 @@ const yearOptions = Array.from({ length: 11 }, (_, i) => ({
   label: (currentYear + i).toString(),
   value: currentYear + i,
 }));
+
+const total = computed(() =>
+  expenses.value.reduce((sum, e) => sum + Number(e?.valor ?? 0), 0)
+);
+
+const totalFormatted = computed(() =>
+  new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(total.value)
+);
 
 async function loadExpenses() {
   expenses.value = await listExpensesbyMonthYear(
